@@ -1,6 +1,5 @@
 import { Partnership } from "@prisma/client";
 import Link from "next/link";
-import { Twitter } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -12,6 +11,7 @@ import {
 
 import { Badge } from '~/components/ui/badge';
 import { Separator } from "~/components/ui/separator";
+import { TwitterButton, WebButton } from "./socialButtons";
 
 import { cn } from "~/lib/utils"
 
@@ -19,15 +19,8 @@ type PartnershipCardProps = React.HTMLAttributes<HTMLDivElement> & {
   partnership: Partnership;
 }
 
-function TwitterButton({ uri }: { uri: string }) {
-  return (
-    <a href={uri} target="_blank" className="rounded-full bg-gray-100 p-2 text-black">
-      <Twitter size={16} />
-    </a>
-  );
-}
-
 export default function PartnershipCard({ partnership, className, ...props }: PartnershipCardProps) {
+  const hasSocials = partnership.twitterURI || partnership.websiteURI;
   return (
     <Card className={cn("w-72 bg-gradient-to-b from-slate-900 to-slate-950 text-white", className)} {...props}>
       <CardHeader>
@@ -41,9 +34,10 @@ export default function PartnershipCard({ partnership, className, ...props }: Pa
       <CardContent>
         <p className="text-sm">{ partnership.description }</p>
       </CardContent>
-      <Separator className="mx-6 w-auto bg-gray-500" />
+      { hasSocials && <Separator className="mx-6 w-auto bg-gray-500" /> }
       <CardFooter className="py-3">
         { partnership.twitterURI && <TwitterButton uri={partnership.twitterURI} /> }
+        { partnership.websiteURI && <WebButton uri={partnership.websiteURI} /> }
       </CardFooter>
     </Card>
   );

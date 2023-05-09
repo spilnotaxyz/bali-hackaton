@@ -13,15 +13,7 @@ const Home: NextPage = () => {
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
 
-  const partnerships = Array(10).fill({
-    id: "1",
-    title: "Test Partnership",
-    category: "MARKETING",
-    description: "Lorem ipsum dolor sit amet ".repeat(5),
-    twitterURI: "https://twitter.com/0xWagmi",
-  });
-
-  // const partnerships = data?.pages.flatMap((page) => page.partnerships) ?? [];
+  const partnerships = data?.pages.flatMap((page) => page.partnerships) ?? [];
 
   return (
     <>
