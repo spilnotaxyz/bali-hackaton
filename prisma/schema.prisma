@@ -10,15 +10,16 @@ datasource db {
 }
 
 model Partnership {
-    id           String   @id @default(cuid())
-    title        String   @db.VarChar(200)
+    id           String     @id @default(cuid())
+    title        String     @db.VarChar(200)
     category     Category
     twitterURI   String
     websiteURI   String
-    description  String   @db.VarChar(2000)
+    description  String     @db.VarChar(2000)
     ownerAddress String
-    createdAt    DateTime @default(now())
+    createdAt    DateTime   @default(now())
     signature    String
+    proposals    Proposal[]
 }
 
 enum Category {
@@ -30,4 +31,19 @@ enum Category {
     COLLAB
     PARTNERSHIPS
     OTHER
+}
+
+model Proposal {
+    id            String       @id @default(cuid())
+    name          String       @db.VarChar(200)
+    comment       String       @db.VarChar(2000)
+    accepted      Boolean      @default(false)
+    createdAt     DateTime     @default(now())
+    occupation    String       @db.VarChar(200)
+    twitterURI    String
+    websiteURI    String
+    Partnership   Partnership? @relation(fields: [partnershipId], references: [id])
+    partnershipId String?
+
+    @@index([partnershipId])
 }
