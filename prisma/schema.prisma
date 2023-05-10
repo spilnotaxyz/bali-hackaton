@@ -34,16 +34,17 @@ enum Category {
 }
 
 model Proposal {
-    id            String       @id @default(cuid())
-    name          String       @db.VarChar(200)
-    comment       String       @db.VarChar(2000)
-    accepted      Boolean      @default(false)
-    createdAt     DateTime     @default(now())
-    occupation    String       @db.VarChar(200)
-    twitterURI    String
-    websiteURI    String
-    Partnership   Partnership? @relation(fields: [partnershipId], references: [id])
-    partnershipId String?
+    id             String       @id @default(cuid())
+    name           String       @db.VarChar(200)
+    comment        String       @db.VarChar(2000)
+    createdAt      DateTime     @default(now())
+    occupation     String       @db.VarChar(200)
+    twitterURI     String
+    websiteURI     String
+    signature      String?
+    partnerAddress String
+    Partnership    Partnership? @relation(fields: [partnershipId], references: [id])
+    partnershipId  String?
 
     @@index([partnershipId])
 }
