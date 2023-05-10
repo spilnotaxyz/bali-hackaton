@@ -1,4 +1,4 @@
-import { Category } from "@prisma/client";
+import { Category } from ".prisma/client";
 import { type TypeOf, number, object, string, union, literal } from "zod";
 
 export const getPartnershipSchema = object({

@@ -1,4 +1,4 @@
-import { type Partnership, type Proposal } from "@prisma/client";
+import { type Partnership, type Proposal } from ".prisma/client";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 
 const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID as string;

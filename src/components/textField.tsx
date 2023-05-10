@@ -4,6 +4,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { cn } from "~/lib/utils";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TextFieldProps = Omit<UseFormRegisterReturn<any>, "ref"> & {
   label: string;
   note?: string;

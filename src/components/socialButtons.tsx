@@ -1,4 +1,4 @@
-import { Partnership, Proposal } from "@prisma/client";
+import { type Partnership, type Proposal } from ".prisma/client";
 import { Twitter, Globe } from "lucide-react";
 
 export function TwitterButton({ uri }: { uri: string }) {

@@ -19,6 +19,9 @@ dependencies:
   '@radix-ui/react-separator':
     specifier: ^1.0.2
     version: 1.0.2(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-slot':
+    specifier: ^1.0.1
+    version: 1.0.1(react@18.2.0)
   '@rainbow-me/rainbowkit':
     specifier: ^0.12.12
     version: 0.12.12(@types/react@18.0.28)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(wagmi@0.12.13)
@@ -87,6 +90,9 @@ dependencies:
     version: 3.21.4
 
 devDependencies:
+  '@prisma/nextjs-monorepo-workaround-plugin':
+    specifier: ^4.14.0
+    version: 4.14.0
   '@types/eslint':
     specifier: ^8.21.3
     version: 8.21.3
@@ -1035,6 +1041,10 @@ packages:
   /@prisma/engines@4.12.0:
     resolution: {integrity: sha512-0alKtnxhNB5hYU+ymESBlGI4b9XrGGSdv7Ud+8TE/fBNOEhIud0XQsAR+TrvUZgS4na5czubiMsODw0TUrgkIA==}
     requiresBuild: true
+
+  /@prisma/nextjs-monorepo-workaround-plugin@4.14.0:
+    resolution: {integrity: sha512-mN3sr13ea8nGi2w1PqcDXb3p0MVbNQj2kgvrrzg3tdMG30UJoz8ov+AQbCh5IBv+mzpi4sP5McXy4+Zf30eU+A==}
+    dev: true
 
   /@protobufjs/aspromise@1.1.2:
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
