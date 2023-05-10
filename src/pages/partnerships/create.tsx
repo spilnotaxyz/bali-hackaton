@@ -1,192 +1,97 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { type NextPage } from "next";
-import FormGroup, { type FormGroupProps } from "~/components/formGroup";
-import { Input } from "~/components/ui/input";
-import { type Partnership, Category } from "@prisma/client";
-import { type ChangeEvent, useState, type FormEvent, useId } from "react";
-import { Textarea } from "~/components/ui/textarea";
+import { Category } from "@prisma/client";
+import { useId } from "react";
 import { Button } from "~/components/ui/button";
-import { useAccount, useSignTypedData } from "wagmi";
-import { api } from "~/utils/api";
+import { useAccount } from "wagmi";
 import { useRouter } from "next/router";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import TextField from "~/components/textField";
+import SelectField from "~/components/selectField";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { api } from "~/utils/api";
 
-type CreatePartnershipForm = Omit<
-  Partnership,
-  "id" | "createdAt" | "signature" | "ownerAddress"
->;
-
-type TypedDataSignatureTypes = {
-  CreatePartnershipForm: {
-    name: keyof CreatePartnershipForm;
-    type: "string";
-  }[];
+type CreatePartnershipFormInput = {
+  title: string;
+  category: Category;
+  twitterURI: string;
+  websiteURI: string;
+  description: string;
+  projectName: string;
 };
 
+const categoryOptions = [
+  { value: Category.MARKETING, label: "Advisor" },
+  { value: Category.RESEARCH, label: "Research" },
+  { value: Category.AUDIT, label: "Audit" },
+  { value: Category.INVESTOR, label: "Investor" },
+  { value: Category.COLLAB, label: "Collab" },
+  { value: Category.PARTNERSHIPS, label: "Partnerships" },
+  { value: Category.OTHER, label: "Other" },
+];
+
+const createPartnershiSchema = yup.object({
+  title: yup.string().max(200, "Too long").required("Required"),
+  category: yup
+    .string()
+    .required("Required")
+    .oneOf([
+      "MARKETING",
+      "RESEARCH",
+      "AUDIT",
+      "ADVISOR",
+      "INVESTOR",
+      "COLLAB",
+      "PARTNERSHIPS",
+      "OTHER",
+    ]),
+  twitterURI: yup.string().url("Not a valid url").required("Required"),
+  websiteURI: yup.string().url("Not a valid url").required("Required"),
+  description: yup.string().max(2000, "Too long").required("Required"),
+  projectName: yup.string().max(200, "Too long").required("Required"),
+});
+
 const CreatePartnershipPage: NextPage = () => {
-  const { address } = useAccount();
   const formId = useId();
-  const [formData, setFormData] = useState<CreatePartnershipForm>({
-    projectName: "",
-    title: "",
-    category: Category.ADVISOR,
-    twitterURI: "",
-    websiteURI: "",
-    description: "",
-  });
+  const account = useAccount();
   const router = useRouter();
+  const { address } = useAccount();
 
-  const typedDataSignatureTypes: TypedDataSignatureTypes = {
-    CreatePartnershipForm: [
-      { name: "title", type: "string" },
-      { name: "category", type: "string" },
-      { name: "twitterURI", type: "string" },
-      { name: "websiteURI", type: "string" },
-      { name: "description", type: "string" },
-    ],
-  };
-
-  const { signTypedDataAsync } = useSignTypedData({
-    domain: {},
-    types: typedDataSignatureTypes,
-    value: formData,
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreatePartnershipFormInput>({
+    mode: "onBlur",
+    resolver: yupResolver(createPartnershiSchema),
+    defaultValues: {
+      title: "",
+      twitterURI: "",
+      websiteURI: "",
+      projectName: "",
+      description: "",
+      category: "ADVISOR",
+    },
   });
 
-  const { mutateAsync } = api.partnership.createPartnership.useMutation();
+  const { mutateAsync: createPartnership } =
+    api.partnership.createPartnership.useMutation();
 
-  const handleFormControlChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    maxChars?: number
-  ) => {
-    if (isNameKeyOfFormData(event.target.name)) {
-      updateFormData(event.target.name, event.target.value.slice(0, maxChars));
-    } else
-      console.warn(
-        "The name attribute of the form control does not match any key of the provided form data."
-      );
-  };
-
-  const handleCategorySelectChange = (value: string) => {
-    updateFormData("category", value);
-  };
-
-  const isNameKeyOfFormData = (
-    name: string
-  ): name is keyof CreatePartnershipForm => {
-    return name in formData;
-  };
-
-  const updateFormData = (name: keyof CreatePartnershipForm, value: string) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit: SubmitHandler<CreatePartnershipFormInput> = async (data) => {
     try {
       if (!address)
         throw new Error("Only a connected account can create a partnership.");
-      event.preventDefault();
-      const signature = await signTypedDataAsync();
-      await mutateAsync({
-        projectName: formData.projectName,
-        title: formData.title,
-        category: formData.category,
-        twitterURI: formData.twitterURI,
-        websiteURI: formData.websiteURI,
-        description: formData.description,
-        ownerAddress: address,
-        signature,
+
+      await createPartnership({
+        ownerAddress: account.address as string,
+        ...data,
       });
       await router.push("/");
     } catch (error) {
       console.error(error);
     }
   };
-
-  const renderTextInput = (
-    id: string,
-    name: keyof CreatePartnershipForm,
-    maxChars?: number
-  ) => (
-    <Input
-      id={id}
-      name={name}
-      value={formData[name]}
-      onChange={(event) => handleFormControlChange(event, maxChars)}
-    />
-  );
-
-  const renderCategorySelect = (id: string) => (
-    <Select
-      name="category"
-      value={formData.category || undefined}
-      onValueChange={handleCategorySelectChange}
-    >
-      <SelectTrigger id={id}>
-        <SelectValue placeholder="Category" />
-      </SelectTrigger>
-      <SelectContent>
-        {Object.values(Category).map((category, index) => (
-          <SelectItem value={category} key={index}>
-            {category.charAt(0) + category.slice(1).toLowerCase()}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-
-  const renderTextArea = (
-    id: string,
-    name: keyof CreatePartnershipForm,
-    maxChars?: number
-  ) => (
-    <Textarea
-      id={id}
-      name={name}
-      value={formData.description}
-      onChange={(event) => handleFormControlChange(event, maxChars)}
-      className="resize-none"
-    />
-  );
-
-  const formGroupsProps: FormGroupProps[] = [
-    {
-      label: "Project name",
-      className: "md:col-span-2",
-      renderControl: (id) => renderTextInput(id, "projectName", 200),
-      note: "Max. 200 characters",
-    },
-    {
-      label: "Partnership title",
-      renderControl: (id) => renderTextInput(id, "title", 200),
-      note: "Max. 200 characters",
-    },
-    {
-      label: "Twitter link",
-      renderControl: (id) => renderTextInput(id, "twitterURI"),
-    },
-    {
-      label: "Website URL",
-      renderControl: (id) => renderTextInput(id, "websiteURI"),
-    },
-    {
-      label: "Category",
-      renderControl: (id) => renderCategorySelect(id),
-    },
-    {
-      label: "Description",
-      className: "md:col-span-2",
-      renderControl: (id) => renderTextArea(id, "description", 2000),
-      note: "Max. 2000 characters",
-    },
-  ];
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-900 to-sky-950 py-16">
@@ -196,21 +101,55 @@ const CreatePartnershipPage: NextPage = () => {
           <form
             id={formId}
             className="grid grid-cols-1 gap-4 md:grid-cols-2"
-            onSubmit={(event) => {
-              void handleSubmit(event);
-            }}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={handleSubmit(onSubmit)}
           >
-            {formGroupsProps.map((formGroupProps, index) => (
-              <FormGroup {...formGroupProps} key={index} />
-            ))}
+            <TextField
+              label="Project name"
+              className="md:col-span-2"
+              note="Max. 200 characters"
+              {...register("projectName")}
+              error={errors.projectName?.message}
+            />
+            <TextField
+              label="Partnership title"
+              className="md:col-span-2"
+              note="Max. 200 characters"
+              {...register("title")}
+              error={errors.title?.message}
+            />
+            <TextField
+              label="Twitter link"
+              className="md:col-span-2"
+              {...register("twitterURI")}
+              error={errors.twitterURI?.message}
+            />
+            <TextField
+              label="Website URL"
+              className="md:col-span-2"
+              {...register("websiteURI")}
+              error={errors.websiteURI?.message}
+            />
+            <TextField
+              label="Description"
+              className="md:col-span-2"
+              note="Max. 2000 characters"
+              {...register("description")}
+              error={errors.description?.message}
+            />
+            <SelectField
+              label="Category"
+              className="md:col-span-2"
+              name="category"
+              control={control}
+              options={categoryOptions}
+            />
           </form>
           <Button
+            type="submit"
             form={formId}
             variant="secondary"
-            type="submit"
             className="ml-auto mt-8 block"
-            // TODO: More sophisticated client validation should be included
-            disabled={Object.values(formData).some((value) => !value)}
           >
             Create partnership
           </Button>

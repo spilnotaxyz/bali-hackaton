@@ -11,7 +11,6 @@ export const getPartnershipsSchema = object({
 });
 
 export const createPartnershipSchema = object({
-  signature: string(),
   ownerAddress: string(),
   title: string().max(200),
   projectName: string().max(200),
