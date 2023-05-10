@@ -1,4 +1,4 @@
-import { type TypeOf, number, object, string, boolean } from "zod";
+import { type TypeOf, number, object, string } from "zod";
 
 export const getProposalsSchema = object({
   partnershipId: string().cuid(),
@@ -13,11 +13,12 @@ export const createProposalSchema = object({
   twitterURI: string().url(),
   websiteURI: string().url(),
   partnershipId: string().cuid(),
+  partnerAddress: string()
 });
 
 export const updateProposalSchema = createProposalSchema
-  .omit({ partnershipId: true })
-  .merge(object({ id: string().cuid(), accepted: boolean() }))
+  .omit({ partnershipId: true, partnerAddress: true })
+  .merge(object({ id: string().cuid(), signature: string() }))
   .partial();
 
 export const deleteProposalSchema = object({ id: string().cuid() });

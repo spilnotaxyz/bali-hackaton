@@ -12,7 +12,7 @@ import {
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const partnershipRouter = createTRPCRouter({
-  getPartnerShip: publicProcedure
+  getPartnership: publicProcedure
     .input(getPartnershipSchema)
     .query(({ input }) => getPartnershipHandler(input)),
   getPartnerships: publicProcedure

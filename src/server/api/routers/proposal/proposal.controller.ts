@@ -16,7 +16,7 @@ export const getProposalsHandler = async (input: GetProposalsInput) => {
   const cursor = input.cursor;
   const limit = input.limit ?? 10;
 
-  const ptoposals = await findAllProposals({
+  const proposals = await findAllProposals({
     take: limit + 1,
     cursor: cursor ? { id: cursor } : undefined,
     where: {
@@ -29,14 +29,14 @@ export const getProposalsHandler = async (input: GetProposalsInput) => {
 
   let nextCursor: typeof cursor | undefined = undefined;
 
-  if (ptoposals.length > limit) {
-    const nextProposal = ptoposals.pop();
+  if (proposals.length > limit) {
+    const nextProposal = proposals.pop();
 
     nextCursor = nextProposal?.id;
   }
   return {
     nextCursor,
-    ptoposals,
+    proposals,
   };
 };
 
@@ -47,10 +47,11 @@ export const createProposalHandler = async (input: CreateProposalInput) =>
       id: true,
       name: true,
       comment: true,
-      accepted: true,
+      signature: true,
       createdAt: true,
       occupation: true,
       twitterURI: true,
+      partnerAddress: true,
     },
   });
 
@@ -62,10 +63,11 @@ export const uptateProposalHandler = ({ id, ...data }: UpdateProposalInput) =>
       id: true,
       name: true,
       comment: true,
-      accepted: true,
+      signature: true,
       createdAt: true,
       occupation: true,
       twitterURI: true,
+      partnerAddress: true,
     },
   });
 
