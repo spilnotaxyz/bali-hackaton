@@ -9,7 +9,8 @@
     "start": "next start",
     "db:push": "pnpm prisma db push",
     "db:generate": "pnpm prisma generate",
-    "db:dev": "pnpm prisma studio --port 5557"
+    "db:dev": "pnpm prisma studio --port 5557",
+    "postinstall": "pnpm db:generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",
