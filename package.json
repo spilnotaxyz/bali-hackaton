@@ -12,7 +12,10 @@
     "db:dev": "pnpm prisma studio --port 5557"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.1.0",
     "@prisma/client": "^4.12.0",
+    "@radix-ui/react-label": "^2.0.1",
+    "@radix-ui/react-select": "^1.2.1",
     "@radix-ui/react-separator": "^1.0.2",
     "@rainbow-me/rainbowkit": "^0.12.12",
     "@t3-oss/env-nextjs": "^0.2.1",
@@ -28,10 +31,12 @@
     "next": "^13.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
     "superjson": "1.12.2",
     "tailwind-merge": "^1.12.0",
     "tailwindcss-animate": "^1.0.5",
     "wagmi": "^0.12.13",
+    "yup": "^1.1.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
