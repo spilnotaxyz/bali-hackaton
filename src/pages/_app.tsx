@@ -1,9 +1,13 @@
 import { type AppType } from "next/app";
 import Head from "next/head";
 
-import { getDefaultWallets, RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+  darkTheme,
+} from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { sepolia, foundry } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 import Header from "~/components/header";
@@ -13,19 +17,22 @@ import "@rainbow-me/rainbowkit/styles.css";
 import "~/styles/globals.css";
 
 const { chains, provider } = configureChains(
-  [sepolia],
+  [
+    sepolia,
+    // foundry
+  ],
   [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
   appName: "Hackaton Bali",
-  chains
+  chains,
 });
 
 const wagmiClient = createClient({
   autoConnect: true,
   connectors,
-  provider
+  provider,
 });
 
 const MyApp: AppType = ({ Component, pageProps }) => {
@@ -37,9 +44,12 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains} theme={darkTheme({ accentColor: "#0369a1" })}>
+        <RainbowKitProvider
+          chains={chains}
+          theme={darkTheme({ accentColor: "#0369a1" })}
+        >
           <Header />
-          <main className="flex flex-col min-h-screen items-center justify-start pt-20 bg-gradient-to-b from-slate-700 to-slate-800 text-white">
+          <main className="flex min-h-screen flex-col items-center justify-start bg-gradient-to-b from-slate-700 to-slate-800 pt-20 text-white">
             <Component {...pageProps} />
           </main>
         </RainbowKitProvider>
