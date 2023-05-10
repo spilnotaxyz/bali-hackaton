@@ -44,6 +44,7 @@ model Proposal {
     signature      String?
     partnerAddress String
     Partnership    Partnership? @relation(fields: [partnershipId], references: [id])
+    ipfsURI        String?
     partnershipId  String?
 
     @@index([partnershipId])

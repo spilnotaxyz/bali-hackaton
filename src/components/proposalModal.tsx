@@ -13,14 +13,14 @@ import * as yup from "yup";
 import { type FC, useId } from "react";
 import { api } from "~/utils/api";
 import { useAccount } from "wagmi";
-import { Proposal } from "@prisma/client";
+import { type Proposal } from "@prisma/client";
 
 type Props = {
   canEdit: boolean;
   proposal: Proposal | null;
   partnershipId: string;
   closeModal: () => void;
-  onCreate: (proposal: Proposal) => void;
+  onCreate: () => Promise<void>;
 };
 
 type ProposalFormInput = {
@@ -71,12 +71,13 @@ const ProposalModal: FC<Props> = ({
       if (!address)
         throw new Error("Only a connected account can create a partnership.");
 
-      const proposal = await mutateAsync({
+      await mutateAsync({
         ...formData,
         partnerAddress: address,
         partnershipId,
       });
-      onCreate(proposal);
+
+      await onCreate();
       closeModal();
       reset();
     } catch (err) {
