@@ -34,6 +34,7 @@ export const getPartnershipsHandler = async (input: GetPartnershipsInput) => {
       createdAt: "desc",
     },
     select: {
+      id: true,
       title: true,
       category: true,
       createdAt: true,
