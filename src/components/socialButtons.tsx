@@ -19,7 +19,7 @@ export function WebButton({ uri }: { uri: string }) {
 
 export default function SocialButtons({ record }: { record: Partial<Partnership | Proposal>}) {
   return (
-    <span className="inline-flex space-x-1">
+    <span className="inline-flex space-x-1.5">
       { record.twitterURI && <TwitterButton uri={record.twitterURI} /> }
       { record.websiteURI && <WebButton uri={record.websiteURI} /> }
     </span>

@@ -36,6 +36,9 @@ export const getPartnershipsHandler = async (input: GetPartnershipsInput) => {
     select: {
       id: true,
       title: true,
+      description: true,
+      twitterURI: true,
+      websiteURI: true,
       category: true,
       createdAt: true,
     },
