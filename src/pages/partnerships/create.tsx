@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { Category } from "@prisma/client";
+import { Category } from ".prisma/client";
 import { useId } from "react";
 import { Button } from "~/components/ui/button";
 import { useAccount } from "wagmi";

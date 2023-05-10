@@ -12,6 +12,7 @@ import { cn } from "~/lib/utils";
 
 export type SelectFieldProps = {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>;
   options: { value: string; label: string }[];
   label: string;

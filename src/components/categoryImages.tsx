@@ -1,5 +1,5 @@
 import { Megaphone, Microscope, Search, User2, Landmark, Users, Boxes, Bitcoin } from "lucide-react";
-import { type Category } from "@prisma/client";
+import { type Category } from ".prisma/client";
 import { cn } from "~/lib/utils";
 
 const images = {

@@ -1,5 +1,5 @@
 import { type GetServerSidePropsContext } from "next";
-import { type Proposal, type Partnership } from "@prisma/client";
+import { type Proposal, type Partnership } from ".prisma/client";
 import { useRouter } from "next/router";
 import { serverSideHelpers } from "utils/serverSideHelpers";
 import { api } from "~/utils/api";

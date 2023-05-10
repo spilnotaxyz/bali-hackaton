@@ -13,7 +13,7 @@ import * as yup from "yup";
 import { type FC, useId } from "react";
 import { api } from "~/utils/api";
 import { useAccount } from "wagmi";
-import { type Proposal } from "@prisma/client";
+import { type Proposal } from ".prisma/client";
 
 type Props = {
   canEdit: boolean;

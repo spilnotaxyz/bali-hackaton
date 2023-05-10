@@ -1,4 +1,4 @@
-import { type Partnership, type Proposal } from "@prisma/client";
+import { type Partnership, type Proposal } from ".prisma/client";
 import {
   Table,
   TableBody,
@@ -203,7 +203,12 @@ function ProposalRow({
       <TableCell>
         {isPartnershipOwner && !proposal.ipfsURI && (
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          <Button variant="destructive" onClick={() => deleteProposal({id: proposal.id})}>Delete</Button>
+          <Button
+            variant="destructive"
+            onClick={() => deleteProposal({ id: proposal.id })}
+          >
+            Delete
+          </Button>
         )}
       </TableCell>
     </TableRow>
