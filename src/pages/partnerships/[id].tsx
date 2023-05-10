@@ -1,5 +1,5 @@
 import { type GetServerSidePropsContext, type GetServerSideProps, type NextPage } from "next";
-import { type Partnership } from "@prisma/client";
+import { Proposal, type Partnership } from "@prisma/client";
 import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
@@ -9,10 +9,16 @@ import SocialButtons from "~/components/socialButtons";
 import ProposalList from "~/components/proposalList";
 
 import { formatDate, shortenAddress } from "~/utils/format";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import ProposalModal from "~/components/proposalModal";
+import { buttonVariants } from "~/components/ui/button";
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { cn } from '~/lib/utils'
 
 function PartnershipDetails({ partnership }: { partnership: Partnership }) {
   return (
-    <div className="flex-1 justify-between mb-6 px-6">
+    <>
       <h3 className="text-3xl">{ partnership?.title }</h3>
       <div className="flex max-w-2xl justify-between my-5">
         <Trait name="Project" value={partnership?.projectName} />
@@ -32,7 +38,7 @@ function PartnershipDetails({ partnership }: { partnership: Partnership }) {
         </Trait>
       </div>
       <p className="text-sm">{ partnership?.description }</p>
-    </div>
+    </>
   );
 }
 
@@ -57,6 +63,14 @@ const PartnershipPage = () => {
     { enabled: !!partnership }
   ).data?.proposals ?? [];
 
+  const [isOpen, setIsOpen] = useState(false);
+  const { isConnected} = useAccount()
+  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
+
+  useEffect(() => {
+    if (selectedProposal) setIsOpen(true);
+  }, [selectedProposal])
+
   if (isLoading) {
     return;
   } else if (!partnership) {
@@ -68,7 +82,41 @@ const PartnershipPage = () => {
     <div className="max-w-6xl w-full mt-10 mx-4">
       <div className="flex flex-wrap justify-center">
         <CategoryImage category={partnership.category} className="basis-96 h-60 mb-8 mr-6 rounded-lg overflow-hidden" />
-        <PartnershipDetails partnership={partnership} />
+        <div className="mb-6 flex-1 px-6">
+          <PartnershipDetails partnership={partnership} />
+          <Dialog
+            open={isOpen}
+            onOpenChange={(isOpen) => {
+              setIsOpen(isOpen);
+              if (!isOpen) setSelectedProposal(null);
+            }}
+          >
+            <DialogTrigger
+              disabled={!isConnected}
+              className={cn("mt-8", buttonVariants())}
+            >
+              Create Proposal
+            </DialogTrigger>
+            {!isConnected && (
+              <p className="mt-2 font-bold text-red-400">
+                You need to connect your wallet in order to use this
+                functionality!
+              </p>
+            )}
+            {isOpen && (
+              <ProposalModal
+                canEdit={!selectedProposal}
+                proposal={selectedProposal}
+                partnershipId={partnership.id}
+                closeModal={() => {
+                  setIsOpen(false);
+                  setSelectedProposal(null);
+                }}
+                onCreate={(proposal) => proposals.push(proposal)}
+              />
+            )}
+          </Dialog>
+        </div>
       </div>
       <div className="basis-full my-5">
         <h3 className="text-3xl">Proposals</h3>
