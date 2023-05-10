@@ -1,0 +1,27 @@
+{
+  "name": "@bali/eslint-config",
+  "private": true,
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.48.2",
+    "eslint": "^7.32.0",
+    "eslint-config-next": "^13.3.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-turbo": "latest",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-storybook": "^0.6.10",
+    "eslint-plugin-testing-library": "^5.10.2",
+    "prettier": "^2.8.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}

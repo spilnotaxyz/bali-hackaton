@@ -1,0 +1,27 @@
+{
+  "name": "@bali/api",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bali/auth": "workspace:@bali/auth@*",
+    "@bali/db": "workspace:@bali/db@*",
+    "@trpc/client": "10.19.1",
+    "@trpc/server": "10.19.1",
+    "superjson": "1.9.1",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@bali/eslint-config": "workspace:@bali/eslint-config@*",
+    "@bali/tsconfig": "workspace:@bali/tsconfig@*",
+    "eslint": "^8.37.0",
+    "typescript": "^5.0.3"
+  }
+}

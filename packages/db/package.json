@@ -1,0 +1,28 @@
+{
+  "name": "@bali/db",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "db:generate": "pnpm with-env-dev prisma generate",
+    "db:push": "pnpm with-env-dev prisma db push --skip-generate",
+    "dev": "pnpm with-env-dev prisma studio --port 5556",
+    "with-env-dev": "dotenv -e ../../.env -c development --"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.12.0"
+  },
+  "devDependencies": {
+    "@bali/eslint-config": "workspace:@bali/eslint-config@*",
+    "@bali/tsconfig": "workspace:@bali/tsconfig@*",
+    "@types/node": "^18.15.11",
+    "dotenv-cli": "^7.1.0",
+    "eslint": "^8.37.0",
+    "prisma": "^4.12.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "React Library",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
+    "lib": ["DOM", "ES2015"],
+    "module": "ESNext",
+    "target": "es6",
+    "resolveJsonModule": true
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "extends": "@bali/tsconfig/base.json",
+  "include": ["index.ts"]
+}
