@@ -17,6 +17,7 @@ model Partnership {
     websiteURI   String
     description  String     @db.VarChar(2000)
     ownerAddress String
+    projectName  String     @db.VarChar(200)
     createdAt    DateTime   @default(now())
     signature    String
     proposals    Proposal[]
