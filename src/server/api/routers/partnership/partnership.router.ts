@@ -18,7 +18,7 @@ export const partnershipRouter = createTRPCRouter({
   getPartnerships: publicProcedure
     .input(getPartnershipsSchema)
     .query(({ input }) => getPartnershipsHandler(input)),
-  createPartnerShip: publicProcedure
+  createPartnership: publicProcedure
     .input(createPartnershipSchema)
-    .query(({ input }) => createPartnershipHandler(input)),
+    .mutation(({ input }) => createPartnershipHandler(input)),
 });

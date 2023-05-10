@@ -18,11 +18,11 @@ export const proposalRouter = createTRPCRouter({
     .query(({ input }) => getProposalsHandler(input)),
   createProposal: publicProcedure
     .input(createProposalSchema)
-    .query(({ input }) => createProposalHandler(input)),
+    .mutation(({ input }) => createProposalHandler(input)),
   updateProposal: publicProcedure
     .input(updateProposalSchema)
-    .query(({ input }) => uptateProposalHandler(input)),
+    .mutation(({ input }) => uptateProposalHandler(input)),
   deleteProposal: publicProcedure
     .input(deleteProposalSchema)
-    .query(({ input }) => deleteProposalHandler(input)),
+    .mutation(({ input }) => deleteProposalHandler(input)),
 });
