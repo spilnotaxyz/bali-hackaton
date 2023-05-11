@@ -115,7 +115,7 @@ const PartnershipPage = () => {
               Create Proposal
             </DialogTrigger>
             {mounted && !isConnected && (
-              <p className="mt-2 font-bold text-red-400">
+              <p className="mt-2 text-xs text-red-400">
                 You need to connect your wallet in order to use this
                 functionality!
               </p>
