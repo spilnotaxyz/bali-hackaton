@@ -126,24 +126,28 @@ function ProposalRow({
       partnership.ownerAddress as Address,
       proposal.partnerAddress as Address,
       signature as Address,
-      "http://localhost:3000/partnerships/clhh170s90000smpcnwrzxgzv",
+      ipfsLink,
     ],
-    enabled: !!signature && !!isProposalOwner && mounted,
+    enabled: !!signature && !!isProposalOwner && !!ipfsLink && mounted,
   });
 
   const { write: mint, data: mintTsResponse } = usePartnershipSafeMint(config);
 
-  const onMint = async () => {
-    try {
+  useEffect(() => {
+    const getIpfs = async () => {
+      try {
       const link = await uploadPartnershipToIPFS(partnership, proposal);
       if (!link) throw Error("No link");
-
       setIpfsLink(link);
-      mint?.();
-    } catch (err) {
-      console.log("Minting error:", err);
-    }
-  };
+      } catch (err) {
+        console.error(err)
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    if (isProposalOwner && proposal.signature && !proposal.ipfsURI) getIpfs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useWaitForTransaction({
     hash: mintTsResponse?.hash,
@@ -193,7 +197,7 @@ function ProposalRow({
           <Button
             variant="outline"
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={onMint}
+            onClick={mint}
             disabled={!!proposal.ipfsURI}
           >
             {proposal.ipfsURI ? "Minted" : "Mint"}
