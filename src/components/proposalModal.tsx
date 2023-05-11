@@ -14,6 +14,7 @@ import { type FC, useId } from "react";
 import { api } from "~/utils/api";
 import { useAccount } from "wagmi";
 import { type Proposal } from ".prisma/client";
+import { toast } from "react-toastify";
 
 type Props = {
   canEdit: boolean;
@@ -79,10 +80,14 @@ const ProposalModal: FC<Props> = ({
       });
 
       await onCreate();
+      toast.success("Proposal created!");
       closeModal();
       reset();
     } catch (err) {
       console.error(err);
+      toast.error(
+        "An error occurred. For more infos have a look in the console!"
+      );
     }
   };
 

@@ -26,6 +26,7 @@ import {
 } from "lib/wagmi.hooks";
 import { api } from "~/utils/api";
 import { uploadPartnershipToIPFS } from "lib/ipfs";
+import { toast } from "react-toastify";
 
 export default function ProposalList({
   proposals,
@@ -87,7 +88,11 @@ function ProposalRow({
   const signature = proposal.signature;
   const isPartnershipOwner = accountAddress === partnership.ownerAddress;
   const isProposalOwner = accountAddress === proposal.partnerAddress;
-  const status = proposal.ipfsURI ? "Minted" : (signature ? "Accepted" : "Pending");
+  const status = proposal.ipfsURI
+    ? "Minted"
+    : signature
+    ? "Accepted"
+    : "Pending";
 
   useEffect(() => {
     setMounter(true);
@@ -101,7 +106,15 @@ function ProposalRow({
 
   const { mutate: deleteProposal } = api.proposal.deleteProposal.useMutation({
     onSuccess: async () => {
-      await refetchProposals();
+      try {
+        toast.success("Deleted proposal");
+        await refetchProposals();
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
+      }
     },
   });
 
@@ -115,7 +128,17 @@ function ProposalRow({
         )
       ),
     onSuccess: (signature) => {
-      mutateProposal({ id: proposal.id, signature });
+      try {
+        mutateProposal({ id: proposal.id, signature });
+        toast.success(
+          `Successfully accepted the proposal. The proposal sender can now mint the partnership NFTs for both parties!`
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
+      }
     },
   });
 
@@ -137,11 +160,14 @@ function ProposalRow({
   useEffect(() => {
     const getIpfs = async () => {
       try {
-      const link = await uploadPartnershipToIPFS(partnership, proposal);
-      if (!link) throw Error("No link");
-      setIpfsLink(link);
-      } catch (err) {
-        console.error(err)
+        const link = await uploadPartnershipToIPFS(partnership, proposal);
+        if (!link) throw Error("No link");
+        setIpfsLink(link);
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
       }
     };
 
@@ -154,11 +180,36 @@ function ProposalRow({
     hash: mintTsResponse?.hash,
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSuccess: (...rest) => {
-      console.log("minted", rest);
-      mutateProposal({ id: proposal.id, ipfsURI: ipfsLink });
-      setIpfsLink("");
+      try {
+        console.log("minted", rest);
+        mutateProposal({ id: proposal.id, ipfsURI: ipfsLink });
+        setIpfsLink("");
+        toast.success(
+          `Successfully minted the partnership NFTs for both parties!`
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
+      }
     },
   });
+
+  const onClickMintButton = () => {
+    try {
+      if (!mint) throw new Error("Undefined mint function");
+      mint();
+      toast.success(
+        `The transaction is now being mined. You will be notified once it is confirmed.`
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        "An error occurred. For more infos have a look in the console!"
+      );
+    }
+  };
 
   if (!mounted) return null;
 
@@ -184,15 +235,13 @@ function ProposalRow({
           "unknown"
         )}
       </TableCell>
-      <TableCell>
-        {status}
-      </TableCell>
+      <TableCell>{status}</TableCell>
       <TableCell>
         {isProposalOwner && signature && !proposal.ipfsURI && (
           <Button
             variant="outline"
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={mint}
+            onClick={onClickMintButton}
             disabled={!!proposal.ipfsURI}
           >
             {proposal.ipfsURI ? "Minted" : "Mint"}
