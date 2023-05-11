@@ -76,10 +76,11 @@ const PartnershipPage = () => {
     );
 
   const [isOpen, setIsOpen] = useState(false);
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(
     null
   );
+  const isOwner = address === partnership?.ownerAddress;
 
   useEffect(() => {
     if (selectedProposal) setIsOpen(true);
@@ -109,7 +110,7 @@ const PartnershipPage = () => {
             }}
           >
             <DialogTrigger
-              disabled={mounted && !isConnected}
+              disabled={mounted && (!isConnected || isOwner)}
               className={cn("mt-8", buttonVariants())}
             >
               Create Proposal
@@ -118,6 +119,11 @@ const PartnershipPage = () => {
               <p className="mt-2 text-xs text-red-400">
                 You need to connect your wallet in order to use this
                 functionality!
+              </p>
+            )}
+            {mounted && isOwner && (
+              <p className="mt-2 text-xs text-red-400">
+                You cannot make proposals to yourself
               </p>
             )}
             {isOpen && (

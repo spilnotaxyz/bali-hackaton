@@ -36,8 +36,8 @@ const formDataSchema = yup.object({
   name: yup.string().max(200, "Too long").required("Required"),
   comment: yup.string().max(200, "Too long").required("Required"),
   occupation: yup.string().max(200, "Too long").required("Required"),
-  twitterURI: yup.string().url("Not a valid url").required("Required"),
-  websiteURI: yup.string().url("Not a valid url").required("Required"),
+  twitterURI: yup.string().url("Not a valid url"),
+  websiteURI: yup.string().url("Not a valid url"),
 });
 
 const ProposalModal: FC<Props> = ({
