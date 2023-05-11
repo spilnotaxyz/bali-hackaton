@@ -51,7 +51,7 @@ function Trait({
 }) {
   return (
     <div className="mr-6 flex flex-col items-center justify-evenly">
-      <span className="mb-2 text-xs uppercase text-gray-400">{name}</span>
+      <span className="mb-1 text-xs uppercase text-gray-400">{name}</span>
       <span className="text-md text-center">{value || children}</span>
     </div>
   );

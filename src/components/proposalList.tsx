@@ -26,6 +26,7 @@ import {
 } from "lib/wagmi.hooks";
 import { api } from "~/utils/api";
 import { uploadPartnershipToIPFS } from "lib/ipfs";
+import { toast } from "react-toastify";
 
 export default function ProposalList({
   proposals,
@@ -100,7 +101,15 @@ function ProposalRow({
 
   const { mutate: deleteProposal } = api.proposal.deleteProposal.useMutation({
     onSuccess: async () => {
-      await refetchProposals();
+      try {
+        toast.success("Deleted proposal");
+        await refetchProposals();
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
+      }
     },
   });
 
@@ -114,7 +123,17 @@ function ProposalRow({
         )
       ),
     onSuccess: (signature) => {
-      mutateProposal({ id: proposal.id, signature });
+      try {
+        mutateProposal({ id: proposal.id, signature });
+        toast.success(
+          `Successfully accepted the proposal. The proposal sender can now mint the partnership NFTs for both parties!`
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
+      }
     },
   });
 
@@ -136,11 +155,14 @@ function ProposalRow({
   useEffect(() => {
     const getIpfs = async () => {
       try {
-      const link = await uploadPartnershipToIPFS(partnership, proposal);
-      if (!link) throw Error("No link");
-      setIpfsLink(link);
-      } catch (err) {
-        console.error(err)
+        const link = await uploadPartnershipToIPFS(partnership, proposal);
+        if (!link) throw Error("No link");
+        setIpfsLink(link);
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
       }
     };
 
@@ -153,9 +175,19 @@ function ProposalRow({
     hash: mintTsResponse?.hash,
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSuccess: (...rest) => {
-      console.log("minted", rest);
-      mutateProposal({ id: proposal.id, ipfsURI: ipfsLink });
-      setIpfsLink("");
+      try {
+        console.log("minted", rest);
+        mutateProposal({ id: proposal.id, ipfsURI: ipfsLink });
+        setIpfsLink("");
+        toast.success(
+          `Successfully minted the partnership NFTs for both parties!`
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "An error occurred. For more infos have a look in the console!"
+        );
+      }
     },
   });
 
@@ -206,7 +238,6 @@ function ProposalRow({
       </TableCell>
       <TableCell>
         {isPartnershipOwner && !proposal.ipfsURI && (
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           <Button
             variant="destructive"
             onClick={() => deleteProposal({ id: proposal.id })}

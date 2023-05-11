@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import { toast } from "react-toastify";
 
 type Props = {
   closeModal: () => void;
@@ -85,8 +86,6 @@ const CreatePartnershipModal: FC<Props> = ({ closeModal, onCreate }) => {
     api.partnership.createPartnership.useMutation();
   const { address, isConnected } = useAccount();
 
-  console.log(errors);
-
   const onSubmit: SubmitHandler<CreatePartnershipFormInput> = async (data) => {
     try {
       if (!address)
@@ -98,10 +97,14 @@ const CreatePartnershipModal: FC<Props> = ({ closeModal, onCreate }) => {
       });
 
       await onCreate();
+      toast.success("Partnership created!");
       closeModal();
       reset();
     } catch (error) {
       console.error(error);
+      toast.error(
+        "An error occurred. For more infos have a look in the console!"
+      );
     }
   };
 
