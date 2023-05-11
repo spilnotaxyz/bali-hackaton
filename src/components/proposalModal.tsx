@@ -50,7 +50,7 @@ const ProposalModal: FC<Props> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
   } = useForm<ProposalFormInput>({
     mode: "onBlur",
@@ -63,7 +63,8 @@ const ProposalModal: FC<Props> = ({
       occupation: proposal?.occupation ?? "",
     },
   });
-  const { mutateAsync } = api.proposal.createProposal.useMutation();
+  const { mutateAsync: createProposal } =
+    api.proposal.createProposal.useMutation();
   const { address } = useAccount();
 
   const onSubmit: SubmitHandler<ProposalFormInput> = async (formData) => {
@@ -71,7 +72,7 @@ const ProposalModal: FC<Props> = ({
       if (!address)
         throw new Error("Only a connected account can create a partnership.");
 
-      await mutateAsync({
+      await createProposal({
         ...formData,
         partnerAddress: address,
         partnershipId,
@@ -90,7 +91,7 @@ const ProposalModal: FC<Props> = ({
       <DialogHeader>
         <DialogTitle>
           {canEdit
-            ? "Create a Proposal"
+            ? "Send a Proposal"
             : `Proposal from ${proposal?.name ?? ""}`}
         </DialogTitle>
         {canEdit && (
@@ -155,8 +156,8 @@ const ProposalModal: FC<Props> = ({
           {canEdit ? "Cancel" : "Close"}
         </Button>
         {canEdit && (
-          <Button type="submit" form={formId}>
-            Confirm
+          <Button type="submit" form={formId} disabled={!isValid}>
+            Send Proposal
           </Button>
         )}
       </DialogFooter>
