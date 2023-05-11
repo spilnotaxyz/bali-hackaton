@@ -196,6 +196,21 @@ function ProposalRow({
     },
   });
 
+  const onClickMintButton = () => {
+    try {
+      if (!mint) throw new Error("Undefined mint function");
+      mint();
+      toast.success(
+        `The transaction is now being mined. You will be notified once it is confirmed.`
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        "An error occurred. For more infos have a look in the console!"
+      );
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -226,7 +241,7 @@ function ProposalRow({
           <Button
             variant="outline"
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={mint}
+            onClick={onClickMintButton}
             disabled={!!proposal.ipfsURI}
           >
             {proposal.ipfsURI ? "Minted" : "Mint"}
