@@ -52,8 +52,8 @@ export default function ProposalList({
           <TableHead>Created</TableHead>
           <TableHead>Socials</TableHead>
           <TableHead>URI</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>Action</TableHead>
-          <TableHead>Decline</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -87,6 +87,7 @@ function ProposalRow({
   const signature = proposal.signature;
   const isPartnershipOwner = accountAddress === partnership.ownerAddress;
   const isProposalOwner = accountAddress === proposal.partnerAddress;
+  const status = proposal.ipfsURI ? "Minted" : (signature ? "Accepted" : "Pending");
 
   useEffect(() => {
     setMounter(true);
@@ -184,16 +185,10 @@ function ProposalRow({
         )}
       </TableCell>
       <TableCell>
-        {isPartnershipOwner && (
-          <Button
-            variant="outline"
-            disabled={!!signature}
-            onClick={() => signMessage()}
-          >
-            {signature ? "Accepted" : "Accept"}
-          </Button>
-        )}
-        {isProposalOwner && signature && (
+        {status}
+      </TableCell>
+      <TableCell>
+        {isProposalOwner && signature && !proposal.ipfsURI && (
           <Button
             variant="outline"
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -203,15 +198,22 @@ function ProposalRow({
             {proposal.ipfsURI ? "Minted" : "Mint"}
           </Button>
         )}
-      </TableCell>
-      <TableCell>
-        {isPartnershipOwner && !proposal.ipfsURI && (
+        {isPartnershipOwner && !signature && (
+          <Button
+            variant="outline"
+            disabled={!!signature}
+            onClick={() => signMessage()}
+          >
+            {signature ? "Accepted" : "Accept"}
+          </Button>
+        )}
+        {isPartnershipOwner && !proposal.ipfsURI && !signature && (
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           <Button
             variant="destructive"
             onClick={() => deleteProposal({ id: proposal.id })}
           >
-            Delete
+            Decline
           </Button>
         )}
       </TableCell>

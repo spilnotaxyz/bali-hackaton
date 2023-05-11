@@ -55,8 +55,8 @@ const formDataSchema = yup.object({
       "PARTNERSHIPS",
       "OTHER",
     ]),
-  twitterURI: yup.string().url("Not a valid url").required("Required"),
-  websiteURI: yup.string().url("Not a valid url").required("Required"),
+  twitterURI: yup.string().url("Not a valid url"),
+  websiteURI: yup.string().url("Not a valid url"),
   description: yup.string().max(2000, "Too long").required("Required"),
   projectName: yup.string().max(200, "Too long").required("Required"),
 });
