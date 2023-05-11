@@ -198,11 +198,12 @@ function ProposalRow({
 
   const onClickMintButton = () => {
     try {
-      if (!mint) throw new Error("Undefined mint function");
-      mint();
-      toast.success(
-        `The transaction is now being mined. You will be notified once it is confirmed.`
-      );
+      if (mint) {
+        mint();
+        toast.success(
+          `The transaction is now being mined. You will be notified once it is confirmed.`
+        );
+      }
     } catch (error) {
       console.error(error);
       toast.error(
